@@ -16,16 +16,6 @@
 </head>
 <body>
     <script type="module">
-        // if ('serviceWorker' in navigator) {
-        //     navigator.serviceWorker.register('/service-worker.js')
-        //         .then((registration) => {
-        //             console.log('Service Worker registered with scope:', registration.scope);
-        //         })
-        //         .catch((error) => {
-        //             console.error('Service Worker registration failed:', error);
-        //         });
-        // }
-
         import * as GaussianSplats3D from 'https://cdn.jsdelivr.net/npm/@mkkellogg/gaussian-splats-3d@0.4.5/+esm'
         import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.168.0/+esm'
         
@@ -49,7 +39,8 @@
             'position': INITIAL_SPLAT_POSITION,
             'rotation': [0, 0, 0, 1],
             'scale': [1, 1, 1],
-            'progressiveLoad': false,
+            'progressiveLoad': true,
+            'showLoadingUI': false,
         }).then(() => {
             viewer.start();
             viewer.splatMesh.setPointCloudModeEnabled(true);
@@ -67,8 +58,6 @@
             const { clientX, clientY } = event;
             const normalizedX = (clientX / window.innerWidth) * 2 - 1;
             const normalizedY = -(clientY / window.innerHeight) * 2 + 1;
-
-            console.log(normalizedX, normalizedY);
 
             // Adjust camera position based on mouse movements
             if (viewer.camera) {
