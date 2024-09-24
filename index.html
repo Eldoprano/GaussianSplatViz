@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GaussianSplats3D Viewer</title>
     <style>
-        body, html {
+        body,
+        html {
             margin: 0;
             padding: 0;
             height: 100%;
@@ -14,11 +16,12 @@
         }
     </style>
 </head>
+
 <body>
     <script type="module">
         import * as GaussianSplats3D from 'https://cdn.jsdelivr.net/npm/@mkkellogg/gaussian-splats-3d@0.4.5/+esm'
         import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.168.0/+esm'
-        
+
         // Constants for initial camera and look-at positions
         const INITIAL_CAMERA_POSITION = [20, 8, -23];
         const INITIAL_SPLAT_POSITION = [8.6, 5, -11];
@@ -53,13 +56,12 @@
         // Level of change factor
         const changeFactor = -2;
 
-        // Mouse-controlled camera movement
-        window.addEventListener('mousemove', (event) => {
-            const { clientX, clientY } = event;
+        // Function to handle camera movement
+        const handleCameraMovement = (clientX, clientY) => {
             const normalizedX = (clientX / window.innerWidth) * 2 - 1;
             const normalizedY = -(clientY / window.innerHeight) * 2 + 1;
 
-            // Adjust camera position based on mouse movements
+            // Adjust camera position based on movements
             if (viewer.camera) {
                 const newCameraPosition = initialCameraPosition.clone().add(new THREE.Vector3(normalizedX * changeFactor, normalizedY * changeFactor, normalizedX * changeFactor));
                 // const newLookAtPosition = initialLookAtPosition.clone().add(new THREE.Vector3(normalizedX * changeFactor, normalizedY * changeFactor, 0));
@@ -67,7 +69,21 @@
                 viewer.camera.position.copy(newCameraPosition);
                 // viewer.camera.lookAt(newLookAtPosition);
             }
+        };
+
+        // Mouse-controlled camera movement
+        window.addEventListener('mousemove', (event) => {
+            handleCameraMovement(event.clientX, event.clientY);
+        });
+
+        // Touch-controlled camera movement
+        window.addEventListener('touchmove', (event) => {
+            if (event.touches.length === 1) {
+                const touch = event.touches[0];
+                handleCameraMovement(touch.clientX, touch.clientY);
+            }
         });
     </script>
 </body>
+
 </html>
