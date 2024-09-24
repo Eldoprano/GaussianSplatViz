@@ -95,6 +95,23 @@
             const currentMode = viewer.splatMesh.getPointCloudModeEnabled();
             viewer.splatMesh.setPointCloudModeEnabled(!currentMode);
         });
+
+        // Handle device orientation
+        window.addEventListener('deviceorientation', (event) => {
+            const alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0; // Z-axis rotation
+            const beta = event.beta ? THREE.MathUtils.degToRad(event.beta) : 0; // X-axis rotation
+            const gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0; // Y-axis rotation
+
+            // Adjust camera position based on device orientation
+            if (viewer.camera) {
+                const newCameraPosition = initialCameraPosition.clone().add(new THREE.Vector3(
+                    Math.sin(gamma) * changeFactor,
+                    Math.sin(beta) * changeFactor,
+                    Math.sin(alpha) * changeFactor
+                ));
+                viewer.camera.position.copy(newCameraPosition);
+            }
+        });
     </script>
 </body>
 
