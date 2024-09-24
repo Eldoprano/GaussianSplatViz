@@ -84,12 +84,16 @@
             }
         });
 
-        // Toggle PointCloudModeEnabled on spacebar press
+        // Toggle PointCloudModeEnabled on spacebar press and click
         window.addEventListener('keydown', (event) => {
             if (event.code === 'Space') {
                 const currentMode = viewer.splatMesh.getPointCloudModeEnabled();
                 viewer.splatMesh.setPointCloudModeEnabled(!currentMode);
             }
+        });
+        window.addEventListener('click', (event) => {
+            const currentMode = viewer.splatMesh.getPointCloudModeEnabled();
+            viewer.splatMesh.setPointCloudModeEnabled(!currentMode);
         });
     </script>
 </body>
