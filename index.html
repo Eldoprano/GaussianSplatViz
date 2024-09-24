@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaussianSplats3D Viewer</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+    <script type="module">
+        // if ('serviceWorker' in navigator) {
+        //     navigator.serviceWorker.register('/service-worker.js')
+        //         .then((registration) => {
+        //             console.log('Service Worker registered with scope:', registration.scope);
+        //         })
+        //         .catch((error) => {
+        //             console.error('Service Worker registration failed:', error);
+        //         });
+        // }
+
+        import * as GaussianSplats3D from 'https://cdn.jsdelivr.net/npm/@mkkellogg/gaussian-splats-3d@0.4.5/+esm'
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.168.0/+esm'
+        
+        // Constants for initial camera and look-at positions
+        const INITIAL_CAMERA_POSITION = [20, 8, -23];
+        const INITIAL_SPLAT_POSITION = [8.6, 5, -11];
+        const INITIAL_LOOK_AT_POSITION = [-1.6, 8, -0.1];
+
+        // Set up the viewer
+        const viewer = new GaussianSplats3D.Viewer({
+            'cameraUp': [0, -0.99, 0],
+            'initialCameraPosition': INITIAL_CAMERA_POSITION,
+            'initialCameraLookAt': INITIAL_LOOK_AT_POSITION,
+            'sharedMemoryForWorkers': false,
+            'useBuiltInControls': false,
+        });
+
+        // Add the .ksplat file (you need to replace this with your own file path)
+        viewer.addSplatScene('./splats/compressedCroppedBar.ksplat', {
+            'showLoadingUI': true,
+            'position': INITIAL_SPLAT_POSITION,
+            'rotation': [0, 0, 0, 1],
+            'scale': [1, 1, 1],
+            'progressiveLoad': false,
+        }).then(() => {
+            viewer.start();
+            viewer.splatMesh.setPointCloudModeEnabled(true);
+        });
+
+        // Initial camera and look-at positions as THREE.Vector3
+        const initialCameraPosition = new THREE.Vector3(...INITIAL_CAMERA_POSITION);
+        const initialLookAtPosition = new THREE.Vector3(...INITIAL_LOOK_AT_POSITION);
+
+        // Level of change factor
+        const changeFactor = -2;
+
+        // Mouse-controlled camera movement
+        window.addEventListener('mousemove', (event) => {
+            const { clientX, clientY } = event;
+            const normalizedX = (clientX / window.innerWidth) * 2 - 1;
+            const normalizedY = -(clientY / window.innerHeight) * 2 + 1;
+
+            console.log(normalizedX, normalizedY);
+
+            // Adjust camera position based on mouse movements
+            if (viewer.camera) {
+                const newCameraPosition = initialCameraPosition.clone().add(new THREE.Vector3(normalizedX * changeFactor, normalizedY * changeFactor, normalizedX * changeFactor));
+                // const newLookAtPosition = initialLookAtPosition.clone().add(new THREE.Vector3(normalizedX * changeFactor, normalizedY * changeFactor, 0));
+
+                viewer.camera.position.copy(newCameraPosition);
+                // viewer.camera.lookAt(newLookAtPosition);
+            }
+        });
+    </script>
+</body>
+</html>

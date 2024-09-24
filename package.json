@@ -1,0 +1,29 @@
+{
+  "name": "gaussiansplatviz",
+  "version": "1.0.0",
+  "description": "GithubPages visualizer of 3D Gaussian splatting",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel index.html",
+    "build": "parcel build index.html --public-url ./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eldoprano/GaussianSplatViz.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Eldoprano/GaussianSplatViz/issues"
+  },
+  "homepage": "https://github.com/Eldoprano/GaussianSplatViz#readme",
+  "dependencies": {
+    "@mkkellogg/gaussian-splats-3d": "^0.4.5",
+    "three": "^0.168.0"
+  },
+  "devDependencies": {
+    "parcel": "^2.12.0"
+  }
+}
