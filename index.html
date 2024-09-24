@@ -83,6 +83,14 @@
                 handleCameraMovement(touch.clientX, touch.clientY);
             }
         });
+
+        // Toggle PointCloudModeEnabled on spacebar press
+        window.addEventListener('keydown', (event) => {
+            if (event.code === 'Space') {
+                const currentMode = viewer.splatMesh.getPointCloudModeEnabled();
+                viewer.splatMesh.setPointCloudModeEnabled(!currentMode);
+            }
+        });
     </script>
 </body>
 
