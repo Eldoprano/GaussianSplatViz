@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaussianSplats3D Viewer</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="module">
+        import * as GaussianSplats3D from 'https://cdn.jsdelivr.net/npm/@mkkellogg/gaussian-splats-3d@0.4.5/+esm'
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.168.0/+esm'
+
+        // Constants for initial camera and look-at positions
+        const INITIAL_CAMERA_POSITION = [13, -1, 20];
+        const INITIAL_LOOK_AT_POSITION = [-3, 3, 4];
+        const INITIAL_SPLAT_POSITION = [0, 0, 0];
+
+        // Set up the viewer
+        const viewer = new GaussianSplats3D.Viewer({
+            'cameraUp': [0, -0.99, 0],
+            'initialCameraPosition': INITIAL_CAMERA_POSITION,
+            'initialCameraLookAt': INITIAL_LOOK_AT_POSITION,
+            'sharedMemoryForWorkers': false,
+            'useBuiltInControls': true,
+        });
+
+        // Add the .ksplat file (you need to replace this with your own file path)
+        viewer.addSplatScene('./splats/splatKotatsuBetterCroppedCompressed.ksplat', {
+            'showLoadingUI': true,
+            'position': INITIAL_SPLAT_POSITION,
+            'rotation': [0, 0, 0, 1],
+            'scale': [1, 1, 1],
+            'progressiveLoad': true,
+            'showLoadingUI': false,
+        }).then(() => {
+            viewer.start();
+            viewer.splatMesh.setPointCloudModeEnabled(true);
+        });
+
+        window.addEventListener('click', (event) => {
+            const currentMode = viewer.splatMesh.getPointCloudModeEnabled();
+            viewer.splatMesh.setPointCloudModeEnabled(!currentMode);
+        });
+
+    </script>
+</body>
+
+</html>
