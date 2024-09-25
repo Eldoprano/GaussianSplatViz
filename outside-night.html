@@ -100,13 +100,9 @@
         // Handle device orientation
         let initialOrientation;
         window.addEventListener('deviceorientation', (event) => {
-            let alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0; // Z-axis rotation
-            let beta = event.beta ? THREE.MathUtils.degToRad(event.beta) : 0; // X-axis rotation
-            let gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0; // Y-axis rotation
-
-            alpha = math.abs(alpha-180);
-            beta = math.abs(beta-90);
-            gamma = math.abs(gamma-45);
+            let alpha = event.alpha ? math.abs(alpha-180)/180 : 0; // Z-axis rotation
+            let beta = event.beta ? math.abs(beta-90)/90 : 0; // X-axis rotation
+            let gamma = event.gamma ? math.abs(gamma-45)/45 : 0; // Y-axis rotation
 
             // Store initial orientation if not already stored
             if (!initialOrientation) {
