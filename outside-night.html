@@ -106,22 +106,34 @@
             // Adjust camera position based on device orientation
             if (viewer.camera) {
                 let newCameraPosition;
+                let newLookAtPosition;
                 if (window.orientation === 0 || window.orientation === 180) {
                     // Portrait mode
                     newCameraPosition = initialCameraPosition.clone().add(new THREE.Vector3(
-                        Math.sin(gamma) * changeFactor,
-                        Math.sin(beta) * changeFactor,
-                        Math.sin(alpha) * changeFactor
+                        normalizedGamma * changeFactor / 12,
+                        normalizedBeta * changeFactor / 12,
+                        absoluteZ * changeFactor
+                    ));
+                    newLookAtPosition = initialLookAtPosition.clone().add(new THREE.Vector3(
+                        normalizedGamma * -changeFactor,
+                        normalizedBeta * -changeFactor,
+                        0
                     ));
                 } else {
                     // Landscape mode
                     newCameraPosition = initialCameraPosition.clone().add(new THREE.Vector3(
-                        Math.sin(beta) * changeFactor,
-                        Math.sin(gamma) * changeFactor,
-                        Math.sin(alpha) * changeFactor
+                        normalizedBeta * changeFactor / 12,
+                        normalizedGamma * -changeFactor / 12,
+                        absoluteZ * changeFactor
+                    ));
+                    newLookAtPosition = initialLookAtPosition.clone().add(new THREE.Vector3(
+                        normalizedBeta * -changeFactor,
+                        normalizedGamma * changeFactor,
+                        0
                     ));
                 }
                 viewer.camera.position.copy(newCameraPosition);
+                viewer.camera.lookAt(newLookAtPosition);
             }
         });
     </script>
