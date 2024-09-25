@@ -107,28 +107,40 @@
             if (viewer.camera) {
                 let newCameraPosition;
                 let newLookAtPosition;
+
+                // Store initial orientation if not already stored
+                if (!initialOrientation) {
+                    initialOrientation = { alpha, beta, gamma };
+                }
+
+                // Calculate relative changes from initial orientation
+                const relativeAlpha = alpha - initialOrientation.alpha;
+                const relativeBeta = beta - initialOrientation.beta;
+                const relativeGamma = gamma - initialOrientation.gamma;
+
+
                 if (window.orientation === 0 || window.orientation === 180) {
                     // Portrait mode
                     newCameraPosition = initialCameraPosition.clone().add(new THREE.Vector3(
-                        Math.sin(gamma) * changeFactor / 12,
-                        Math.sin(beta) * changeFactor / 12,
-                        Math.sin(alpha) * changeFactor
+                        Math.sin(relativeGamma) * changeFactor / 12,
+                        Math.sin(relativeBeta) * changeFactor / 12,
+                        Math.sin(relativeAlpha) * changeFactor
                     ));
                     newLookAtPosition = initialLookAtPosition.clone().add(new THREE.Vector3(
-                        Math.sin(gamma) * -changeFactor,
-                        Math.sin(beta) * -changeFactor,
+                        Math.sin(relativeGamma) * -changeFactor,
+                        Math.sin(relativeBeta) * -changeFactor,
                         0
                     ));
                 } else {
                     // Landscape mode
                     newCameraPosition = initialCameraPosition.clone().add(new THREE.Vector3(
-                        Math.sin(gamma) * changeFactor / 12,
-                        Math.sin(beta) * -changeFactor / 12,
-                        Math.sin(alpha) * changeFactor
+                        Math.sin(relativeBeta) * changeFactor / 12,
+                        Math.sin(relativeGamma) * -changeFactor / 12,
+                        Math.sin(relativeAlpha) * changeFactor
                     ));
                     newLookAtPosition = initialLookAtPosition.clone().add(new THREE.Vector3(
-                        Math.sin(gamma) * -changeFactor,
-                        Math.sin(beta) * changeFactor,
+                        Math.sin(relativeBeta) * -changeFactor,
+                        Math.sin(relativeGamma) * changeFactor,
                         0
                     ));
                 }
