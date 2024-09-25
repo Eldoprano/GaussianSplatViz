@@ -110,25 +110,25 @@
                 if (window.orientation === 0 || window.orientation === 180) {
                     // Portrait mode
                     newCameraPosition = initialCameraPosition.clone().add(new THREE.Vector3(
-                        normalizedGamma * changeFactor / 12,
-                        normalizedBeta * changeFactor / 12,
-                        absoluteZ * changeFactor
+                        Math.sin(gamma) * changeFactor / 12,
+                        Math.sin(beta) * changeFactor / 12,
+                        Math.sin(alpha) * changeFactor
                     ));
                     newLookAtPosition = initialLookAtPosition.clone().add(new THREE.Vector3(
-                        normalizedGamma * -changeFactor,
-                        normalizedBeta * -changeFactor,
+                        Math.sin(gamma) * -changeFactor,
+                        Math.sin(beta) * -changeFactor,
                         0
                     ));
                 } else {
                     // Landscape mode
                     newCameraPosition = initialCameraPosition.clone().add(new THREE.Vector3(
-                        normalizedBeta * changeFactor / 12,
-                        normalizedGamma * -changeFactor / 12,
-                        absoluteZ * changeFactor
+                        Math.sin(gamma) * changeFactor / 12,
+                        Math.sin(beta) * -changeFactor / 12,
+                        Math.sin(alpha) * changeFactor
                     ));
                     newLookAtPosition = initialLookAtPosition.clone().add(new THREE.Vector3(
-                        normalizedBeta * -changeFactor,
-                        normalizedGamma * changeFactor,
+                        Math.sin(gamma) * -changeFactor,
+                        Math.sin(beta) * changeFactor,
                         0
                     ));
                 }
