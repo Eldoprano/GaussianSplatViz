@@ -114,11 +114,15 @@
                 let newCameraPosition;
                 let newLookAtPosition;
 
-
                 // Calculate relative changes from initial orientation
-                const relativeAlpha = alpha - initialOrientation.alpha;
-                const relativeBeta = beta - initialOrientation.beta;
-                const relativeGamma = gamma - initialOrientation.gamma;
+                let relativeAlpha = alpha - initialOrientation.alpha;
+                let relativeBeta = beta - initialOrientation.beta;
+                let relativeGamma = gamma - initialOrientation.gamma;
+
+                // Clamp the values to their respective ranges
+                relativeAlpha = Math.max(0, Math.min(2 * Math.PI, relativeAlpha));
+                relativeBeta = Math.max(-Math.PI, Math.min(Math.PI, relativeBeta));
+                relativeGamma = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, relativeGamma));
 
 
                 if (window.orientation === 0 || window.orientation === 180) {
