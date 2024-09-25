@@ -100,9 +100,13 @@
         // Handle device orientation
         let initialOrientation;
         window.addEventListener('deviceorientation', (event) => {
-            const alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0; // Z-axis rotation
-            const beta = event.beta ? THREE.MathUtils.degToRad(event.beta) : 0; // X-axis rotation
-            const gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0; // Y-axis rotation
+            let alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0; // Z-axis rotation
+            let beta = event.beta ? THREE.MathUtils.degToRad(event.beta) : 0; // X-axis rotation
+            let gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0; // Y-axis rotation
+
+            alpha = math.abs(alpha-180);
+            beta = math.abs(beta-90);
+            gamma = math.abs(gamma-45);
 
             // Store initial orientation if not already stored
             if (!initialOrientation) {
@@ -118,12 +122,6 @@
                 let relativeAlpha = alpha - initialOrientation.alpha;
                 let relativeBeta = beta - initialOrientation.beta;
                 let relativeGamma = gamma - initialOrientation.gamma;
-
-                // Clamp the values to their respective ranges
-                relativeAlpha = Math.max(0, Math.min(2 * Math.PI, relativeAlpha));
-                relativeBeta = Math.max(-Math.PI, Math.min(Math.PI, relativeBeta));
-                relativeGamma = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, relativeGamma));
-
 
                 if (window.orientation === 0 || window.orientation === 180) {
                     // Portrait mode
