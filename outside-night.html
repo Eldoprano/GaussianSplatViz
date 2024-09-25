@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaussianSplats3D Viewer</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="module">
+        import * as GaussianSplats3D from 'https://cdn.jsdelivr.net/npm/@mkkellogg/gaussian-splats-3d@0.4.5/+esm'
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.168.0/+esm'
+
+        // Constants for initial camera and look-at positions
+        const INITIAL_CAMERA_POSITION = [0.3, -0.5, -0.6];
+        const INITIAL_SPLAT_POSITION = [0,0,0];
+        const INITIAL_LOOK_AT_POSITION = [0.3,-0.5,-0];
+
+        // Set up the viewer
+        const viewer = new GaussianSplats3D.Viewer({
+            'cameraUp': [0, -0.99, 0.3],
+            'initialCameraPosition': INITIAL_CAMERA_POSITION,
+            'initialCameraLookAt': INITIAL_LOOK_AT_POSITION,
+            'sharedMemoryForWorkers': false,
+            'useBuiltInControls': false,
+        });
+
+        // Add the .ksplat file (you need to replace this with your own file path)
+        viewer.addSplatScene('./splats/OutsideNightCropedCompressed.ksplat', {
+            'showLoadingUI': true,
+            'position': INITIAL_SPLAT_POSITION,
+            'rotation': [0, 0, 0, 1],
+            'scale': [1, 1, 1],
+            'progressiveLoad': true,
+            'showLoadingUI': false,
+        }).then(() => {
+            viewer.start();
+            viewer.splatMesh.setPointCloudModeEnabled(true);
+        });
+
+        // Initial camera and look-at positions as THREE.Vector3
+        const initialCameraPosition = new THREE.Vector3(...INITIAL_CAMERA_POSITION);
+        const initialLookAtPosition = new THREE.Vector3(...INITIAL_LOOK_AT_POSITION);
+
+        // Level of change factor
+        const changeFactor = 0.15;
+
+        // Function to handle camera movement
+        const handleCameraMovement = (clientX, clientY) => {
+            const normalizedX = (clientX / window.innerWidth) * 2 - 1;
+            const normalizedY = (clientY / window.innerHeight) * 2 - 1;
+            const absoluteZ = Math.sqrt(Math.abs(normalizedX) * Math.abs(normalizedY));
+
+            // Adjust camera position based on movements
+            if (viewer.camera) {
+                const newCameraPosition = initialCameraPosition.clone().add(new THREE.Vector3(normalizedX * changeFactor/12, normalizedY * changeFactor/12, absoluteZ * changeFactor));
+                const newLookAtPosition = initialLookAtPosition.clone().add(new THREE.Vector3(normalizedX * -changeFactor, normalizedY * -changeFactor, 0));
+
+                viewer.camera.position.copy(newCameraPosition);
+                viewer.camera.lookAt(newLookAtPosition);
+            }
+        };
+
+        // Mouse-controlled camera movement
+        window.addEventListener('mousemove', (event) => {
+            handleCameraMovement(event.clientX, event.clientY);
+        });
+
+        // Touch-controlled camera movement
+        window.addEventListener('touchmove', (event) => {
+            if (event.touches.length === 1) {
+                const touch = event.touches[0];
+                handleCameraMovement(touch.clientX, touch.clientY);
+            }
+        });
+
+        // Toggle PointCloudModeEnabled on spacebar press and click
+        window.addEventListener('keydown', (event) => {
+            if (event.code === 'Space') {
+                const currentMode = viewer.splatMesh.getPointCloudModeEnabled();
+                viewer.splatMesh.setPointCloudModeEnabled(!currentMode);
+            }
+        });
+        window.addEventListener('click', (event) => {
+            const currentMode = viewer.splatMesh.getPointCloudModeEnabled();
+            viewer.splatMesh.setPointCloudModeEnabled(!currentMode);
+        });
+
+        // Handle device orientation
+        window.addEventListener('deviceorientation', (event) => {
+            const alpha = event.alpha ? THREE.MathUtils.degToRad(event.alpha) : 0; // Z-axis rotation
+            const beta = event.beta ? THREE.MathUtils.degToRad(event.beta) : 0; // X-axis rotation
+            const gamma = event.gamma ? THREE.MathUtils.degToRad(event.gamma) : 0; // Y-axis rotation
+
+            // Adjust camera position based on device orientation
+            if (viewer.camera) {
+                const newCameraPosition = initialCameraPosition.clone().add(new THREE.Vector3(
+                    Math.sin(gamma) * changeFactor,
+                    Math.sin(beta) * changeFactor,
+                    Math.sin(alpha) * changeFactor
+                ));
+                viewer.camera.position.copy(newCameraPosition);
+            }
+        });
+    </script>
+</body>
+
+</html>
